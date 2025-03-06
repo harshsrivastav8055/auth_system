@@ -13,6 +13,8 @@ router.post('/register', [
 router.post('/login', login);
 
 router.post('/forgot-password', [check('email', 'Valid email is required').isEmail()], forgotPassword);
-router.post('/reset-password',  resetPassword);
+router.post('/reset-password', [
+    check('newPassword', 'Password must be at least 6 characters').isLength({ min: 6 })
+], resetPassword);
 
 module.exports = router;

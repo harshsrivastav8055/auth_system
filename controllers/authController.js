@@ -40,11 +40,11 @@ exports.login = async (req, res) => {
 
 
 exports.forgotPassword = async (req, res) => {
-    const { email } = req.body;
-    console.log("Received forgot password request for:", email); // Debugging log
+    // const { email } = req.body;
+    // console.log("Received forgot password request for:", email); // Debugging log
 
     try {
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email:req.body.email });
         if (!user) {
             console.log("User not found for email:", email);
             return res.status(400).json({ message: 'User not found' });
@@ -80,7 +80,7 @@ exports.resetPassword = async (req, res) => {
             resetTokenExpiry: { $gt: Date.now() } 
         });
 
-        if (!user) {
+        if (!user || user.tokenExpiry < Date.now()) {
             console.log("Invalid or expired token"); // Debugging log
             return res.status(400).json({ message: 'Invalid or expired token' });
         }
