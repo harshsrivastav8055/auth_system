@@ -41,7 +41,7 @@ exports.login = async (req, res) => {
 
 exports.forgotPassword = async (req, res) => {
     // const { email } = req.body;
-    // console.log("Received forgot password request for:", email); // Debugging log
+    // console.log("Received forgot password request for:", email); 
 
     try {
         const user = await User.findOne({ email:req.body.email });
@@ -56,7 +56,7 @@ exports.forgotPassword = async (req, res) => {
         user.resetTokenExpiry = Date.now() + 3600000; // 1 hour expiry
         await user.save();
 
-        console.log("Generated reset token:", resetToken); // Debugging log
+        console.log("Generated reset token:", resetToken); 
 
         // Send email
         await sendResetEmail(user.email, resetToken);
@@ -64,7 +64,7 @@ exports.forgotPassword = async (req, res) => {
 
         res.json({ message: 'Reset link sent to email' });
     } catch (error) {
-        console.error("Forgot password error:", error); // Log error details
+        console.error("Forgot password error:", error); 
         res.status(500).json({ message: 'Server error' });
     }
 };
@@ -72,7 +72,7 @@ exports.forgotPassword = async (req, res) => {
 // Ensure you export the function
 exports.resetPassword = async (req, res) => {
     const { token, newPassword } = req.body;
-    console.log("Received reset request for token:", token); // Debugging log
+    console.log("Received reset request for token:", token); 
 
     try {
         const user = await User.findOne({ 
@@ -81,11 +81,11 @@ exports.resetPassword = async (req, res) => {
         });
 
         if (!user || user.tokenExpiry < Date.now()) {
-            console.log("Invalid or expired token"); // Debugging log
+            console.log("Invalid or expired token"); 
             return res.status(400).json({ message: 'Invalid or expired token' });
         }
 
-        console.log("User found:", user.email); // Debugging log
+        console.log("User found:", user.email); 
         user.password = await bcrypt.hash(newPassword, 10);
         user.resetToken = undefined;
         user.resetTokenExpiry = undefined;
@@ -93,7 +93,7 @@ exports.resetPassword = async (req, res) => {
 
         res.json({ message: 'Password reset successful' });
     } catch (error) {
-        console.error("Reset password error:", error); // Log error details
+        console.error("Reset password error:", error); 
         res.status(500).json({ message: 'Server error' });
     }
 };
